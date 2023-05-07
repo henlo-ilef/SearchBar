@@ -95,7 +95,6 @@ def get_stemmed_words_for_docs(docs_folder):
 def get_tf_for_docs(docs_folder):
     stemmer = SnowballStemmer("french")
     docs_tf = {}
-    print('hiiiiiiiiii')
     for file_name in os.listdir(docs_folder):
         if file_name.endswith('.txt'):
             file_path = os.path.join(docs_folder, file_name)
@@ -110,8 +109,6 @@ def get_tf_for_docs(docs_folder):
                     else:
                         freq_dict[word] = 1
                 docs_tf[file_name] = freq_dict
-    print(docs_tf)
-
     return docs_tf
 
 # Function to calculate IDF
@@ -164,14 +161,19 @@ def get_query():
 
 # Function to search documents based on the query
 def search_documents(query):
+    # Get the TF-IDF weights for each document in the collection
     docs_weights = get_weights('../docs_folder')
     
-    # Calculate the query term frequencies
+    # Calculate the term frequency of each word in the query
     query_word_counts = Counter(query)
+    
+    # Find the maximum term frequency in the query
     max_word_count = max(query_word_counts.values())
+    
+    # Normalize the term frequencies in the query by the maximum term frequency
     query_word_freq = {word: count / max_word_count for word, count in query_word_counts.items()}
     
-    # Calculate the query weights using TF-IDF
+    # Calculate the TF-IDF weight for each word in the query
     query_weights = {}
     idf = get_idf('../docs_folder')
     
@@ -185,25 +187,34 @@ def search_documents(query):
     similarities = {}
 
     for doc_id, doc_weights in docs_weights.items():
+    # Get the weights for the current document
         doc_vector = np.array(list(doc_weights.values()))
+
+        # Create a query vector by assigning weights to the words in the document, and 0 for those not present in the document
         query_vector = np.array([query_weights.get(word, 0) for word in doc_weights.keys()])
 
+        # Calculate the magnitude (length) of the document and query vectors
         doc_magnitude = np.linalg.norm(doc_vector)
         query_magnitude = np.linalg.norm(query_vector)
 
+        # Check if the magnitude of the document or query vector is 0 (to avoid division by 0)
         if doc_magnitude == 0 or query_magnitude == 0:
             similarity = 0
         else:
+            # Calculate the cosine similarity between the document and the query vectors
             similarity = np.dot(doc_vector, query_vector) / (doc_magnitude * query_magnitude)
 
+        # Add the similarity score for the current document to the dictionary of similarities
         similarities[doc_id] = similarity
+
 
     # Sort the documents by relevance
     relevant_documents = [(doc_id, similarity) for doc_id, similarity in similarities.items() if similarity > 0]
     relevant_documents = sorted(relevant_documents, key=lambda x: x[1], reverse=True)
 
-    
+    # Return a list of relevant documents, sorted by relevance
     return relevant_documents
+
 
 root = Tk()
 
