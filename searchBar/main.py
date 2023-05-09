@@ -216,9 +216,11 @@ def search_documents(query):
     return relevant_documents
 
 def build_inverted_file(docs_folder):
+    # Call the get_weights function
     weights = get_weights(docs_folder)
+    #Initialize the inverted file
     inverted_file = {}
-
+    # Iterate over the weights 
     for word in weights:
         for doc_id in weights[word]:
             weight = weights[word][doc_id]
@@ -226,8 +228,8 @@ def build_inverted_file(docs_folder):
                 inverted_file[word][doc_id] = weight
             else:
                 inverted_file[word] = {doc_id: weight}
-
-    with open("fich-inv.txt", "w") as file:
+    #Store the inverted_file in a file.txt
+    with open("fich-inv1.txt", "w") as file:
         for word in sorted(inverted_file.keys()):
             file.write(word + "----")
             for doc_id in inverted_file[word]:
