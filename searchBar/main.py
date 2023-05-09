@@ -219,7 +219,7 @@ def search_documents(query):
 root = Tk()
 
 root.geometry('580x400+500+250')
-root.title('Search Bar')
+root.title('Spidey')
 
 bgImg = PhotoImage(file='bg.gif')
 root.iconphoto(True, bgImg)
@@ -235,12 +235,13 @@ style.theme_use('default')
 queryLabel= Label(root,text='Query',font=('arial',14,'bold'),bg='lightgrey')
 queryLabel.grid(row=0,column=0)
 
+#Setting the question field
 questionField=Entry(root,width=30,font=('arial',14,'bold'),bd=4,relief=SUNKEN)
 questionField.grid(padx=10,row=0,column=1)
-
+#Setting the output field
 outputLabel = Label(root, text='Output', font=('arial', 14, 'bold'), bg='lightgrey')
 outputLabel.grid(row=1, column=0, sticky='nsew', padx=20, pady=40)
-
+#Setting the result field
 resultText = Text(root, width=50, height=10, font=('arial', 12), bd=4, relief=SUNKEN)
 resultText.grid(row=2, column=0, columnspan=4, padx=20, pady=5)
 
