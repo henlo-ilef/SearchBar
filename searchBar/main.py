@@ -215,6 +215,34 @@ def search_documents(query):
     # Return a list of relevant documents, sorted by relevance
     return relevant_documents
 
+def build_inverted_file(docs_folder):
+    weights = get_weights(docs_folder)
+    inverted_file = {}
+
+    for word in weights:
+        for doc_id in weights[word]:
+            weight = weights[word][doc_id]
+            if word in inverted_file:
+                inverted_file[word][doc_id] = weight
+            else:
+                inverted_file[word] = {doc_id: weight}
+
+    with open("fich-inv.txt", "w") as file:
+        for word in sorted(inverted_file.keys()):
+            file.write(word + "----")
+            for doc_id in inverted_file[word]:
+                weight = inverted_file[word][doc_id]
+                file.write(doc_id + "-----" + str(weight) + "......")
+            file.write("\n")
+
+    return inverted_file
+
+inverted_file = build_inverted_file('../docs_folder')
+
+# Print the inverted file in alphabetical order
+for word in sorted(inverted_file.keys()):
+    print(word, "-->", inverted_file[word])
+
 
 root = Tk()
 
